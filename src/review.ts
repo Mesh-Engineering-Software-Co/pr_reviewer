@@ -432,6 +432,7 @@ ${filename}: ${summary}
     } else {
       let message = '### Summary by CodeRabbit\n\n'
       message += releaseNotesResponse
+      info(`release notes response: ${releaseNotesResponse}`);
       try {
         await commenter.updateDescription(
           context.payload.pull_request.number,
@@ -457,17 +458,6 @@ ${RAW_SUMMARY_END_TAG}
 ${SHORT_SUMMARY_START_TAG}
 ${inputs.shortSummary}
 ${SHORT_SUMMARY_END_TAG}
-
----
-
-<details>
-<summary>Uplevel your code reviews with CodeRabbit Pro</summary>
-
-### CodeRabbit Pro
-
-If you like this project, please support us by purchasing the [Pro version](https://coderabbit.ai). The Pro version has advanced context, superior noise reduction and several proprietary improvements compared to the open source version. Moreover, CodeRabbit Pro is free for open source projects.
-
-</details>
 `
 
   statusMsg += `
