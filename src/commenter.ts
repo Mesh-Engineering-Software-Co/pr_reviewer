@@ -7,7 +7,7 @@ import {octokit} from './octokit'
 const context = github_context
 const repo = context.repo
 
-export const COMMENT_GREETING = `${getInput('bot_icon')}   OBirler`
+export const COMMENT_GREETING = "![](https://avatars.githubusercontent.com/u/117645725)"
 
 export const COMMENT_TAG =
   '<!-- This is an auto-generated comment by OSS OBirler -->'
