@@ -43,7 +43,13 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
         maxResponseTokens: openaiOptions.tokenLimits.responseTokens,
         completionParams: {
           temperature: options.openaiModelTemperature,
-          model: openaiOptions.model
+          model: openaiOptions.model,
+          "provider": {
+                "order": [
+                  "deneme",
+                ],
+                "allow_fallbacks": false
+              },
         }
       })
     } else {
