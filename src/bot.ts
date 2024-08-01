@@ -46,7 +46,7 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
           model: openaiOptions.model,
           "provider": {
                 "order": [
-                  "deneme",
+                  "DeepSeek",
                 ],
                 "allow_fallbacks": false
               },
