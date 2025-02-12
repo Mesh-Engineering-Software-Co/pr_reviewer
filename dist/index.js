@@ -3808,7 +3808,7 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
                     temperature: options.openaiModelTemperature,
                     model: openaiOptions.model,
                     "provider": {
-                        "order": openaiOptions.providerOrder,
+                        "order": openaiOptions.providerOrder.split(','),
                         "allow_fallbacks": false
                     },
                 }
@@ -4640,7 +4640,7 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 async function run() {
-    const options = new _options__WEBPACK_IMPORTED_MODULE_2__/* .Options */ .Ei((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('debug'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_review'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_release_notes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('max_files'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_simple_changes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_comment_lgtm'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getMultilineInput)('path_filters'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('system_message'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_light_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_heavy_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getMultilineInput)('openai_provider_order'), parseInt((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('open_ai_context')), parseInt((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('open_ai_max_output')), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_model_temperature'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_retries'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_timeout_ms'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_base_url'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('language'));
+    const options = new _options__WEBPACK_IMPORTED_MODULE_2__/* .Options */ .Ei((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('debug'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_review'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_release_notes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('max_files'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_simple_changes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_comment_lgtm'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getMultilineInput)('path_filters'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('system_message'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_light_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_heavy_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_provider_order'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('open_ai_context'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('open_ai_max_output'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_model_temperature'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_retries'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_timeout_ms'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_base_url'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('language'));
     // print options
     options.print();
     const prompts = new _prompts__WEBPACK_IMPORTED_MODULE_5__/* .Prompts */ .j((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('summarize'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('summarize_release_notes'));
@@ -6605,8 +6605,8 @@ class Options {
         this.openaiTimeoutMS = parseInt(openaiTimeoutMS);
         this.openaiConcurrencyLimit = parseInt(openaiConcurrencyLimit);
         this.githubConcurrencyLimit = parseInt(githubConcurrencyLimit);
-        this.lightTokenLimits = new TokenLimits(openaiContext, openaiMaxOutput);
-        this.heavyTokenLimits = new TokenLimits(openaiContext, openaiMaxOutput);
+        this.lightTokenLimits = new TokenLimits(parseInt(openaiContext), parseInt(openaiMaxOutput));
+        this.heavyTokenLimits = new TokenLimits(parseInt(openaiContext), parseInt(openaiMaxOutput));
         this.apiBaseUrl = apiBaseUrl;
         this.language = language;
     }
@@ -6684,7 +6684,7 @@ class OpenAIOptions {
     model;
     tokenLimits;
     providerOrder;
-    constructor(model = 'gpt-3.5-turbo', tokenLimits, providerOrder = []) {
+    constructor(model = 'gpt-3.5-turbo', tokenLimits, providerOrder) {
         this.model = model;
         //    if (tokenLimits != null) {
         this.tokenLimits = tokenLimits;

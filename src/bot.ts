@@ -45,7 +45,7 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
           temperature: options.openaiModelTemperature,
           model: openaiOptions.model,
           "provider": {
-                "order": openaiOptions.providerOrder,
+                "order": openaiOptions.providerOrder.split(','),
                 "allow_fallbacks": false
               },
         }

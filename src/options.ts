@@ -13,7 +13,7 @@ export class Options {
   systemMessage: string
   openaiLightModel: string
   openaiHeavyModel: string
-  openaiProviderOrder: string[]
+  openaiProviderOrder: string
   // openaiContext: number
   // openaiMaxOutput: number
   openaiModelTemperature: number
@@ -37,9 +37,9 @@ export class Options {
     systemMessage = '',
     openaiLightModel = 'gpt-3.5-turbo',
     openaiHeavyModel = 'gpt-3.5-turbo',
-    openaiProviderOrder: string[],
-    openaiContext: number ,
-    openaiMaxOutput: number,
+    openaiProviderOrder: string,
+    openaiContext: string ,
+    openaiMaxOutput: string,
     openaiModelTemperature = '0.0',
     openaiRetries = '3',
     openaiTimeoutMS = '120000',
@@ -66,8 +66,8 @@ export class Options {
     this.openaiTimeoutMS = parseInt(openaiTimeoutMS)
     this.openaiConcurrencyLimit = parseInt(openaiConcurrencyLimit)
     this.githubConcurrencyLimit = parseInt(githubConcurrencyLimit)
-    this.lightTokenLimits = new TokenLimits(openaiContext, openaiMaxOutput)
-    this.heavyTokenLimits = new TokenLimits(openaiContext, openaiMaxOutput)
+    this.lightTokenLimits = new TokenLimits(parseInt(openaiContext), parseInt(openaiMaxOutput))
+    this.heavyTokenLimits = new TokenLimits(parseInt(openaiContext), parseInt(openaiMaxOutput))
     this.apiBaseUrl = apiBaseUrl
     this.language = language
   }
@@ -151,9 +151,9 @@ export class PathFilter {
 export class OpenAIOptions {
   model: string
   tokenLimits: TokenLimits
-  providerOrder: string[]
+  providerOrder: string
 
-  constructor(model = 'gpt-3.5-turbo', tokenLimits: TokenLimits, providerOrder: string[] = []) {
+  constructor(model = 'gpt-3.5-turbo', tokenLimits: TokenLimits, providerOrder: string) {
     this.model = model
 //    if (tokenLimits != null) {
       this.tokenLimits = tokenLimits
