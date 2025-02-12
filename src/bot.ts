@@ -45,9 +45,7 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
           temperature: options.openaiModelTemperature,
           model: openaiOptions.model,
           "provider": {
-                "order": [
-                  "DeepSeek",
-                ],
+                "order": openaiOptions.providerOrder,
                 "allow_fallbacks": false
               },
         }

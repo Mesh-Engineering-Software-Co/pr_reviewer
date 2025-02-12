@@ -3808,9 +3808,7 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
                     temperature: options.openaiModelTemperature,
                     model: openaiOptions.model,
                     "provider": {
-                        "order": [
-                            "DeepSeek",
-                        ],
+                        "order": openaiOptions.providerOrder,
                         "allow_fallbacks": false
                     },
                 }
@@ -4642,14 +4640,14 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 async function run() {
-    const options = new _options__WEBPACK_IMPORTED_MODULE_2__/* .Options */ .Ei((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('debug'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_review'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_release_notes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('max_files'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_simple_changes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_comment_lgtm'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getMultilineInput)('path_filters'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('system_message'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_light_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_heavy_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_model_temperature'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_retries'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_timeout_ms'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_base_url'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('language'));
+    const options = new _options__WEBPACK_IMPORTED_MODULE_2__/* .Options */ .Ei((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('debug'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_review'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_release_notes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('max_files'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_simple_changes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_comment_lgtm'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getMultilineInput)('path_filters'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('system_message'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_light_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_heavy_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getMultilineInput)('openai_provider_order'), parseInt((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('open_ai_context')), parseInt((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('open_ai_max_output')), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_model_temperature'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_retries'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_timeout_ms'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('openai_base_url'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('language'));
     // print options
     options.print();
     const prompts = new _prompts__WEBPACK_IMPORTED_MODULE_5__/* .Prompts */ .j((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('summarize'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('summarize_release_notes'));
     // Create two bots, one for summary and one for review
     let lightBot = null;
     try {
-        lightBot = new _bot__WEBPACK_IMPORTED_MODULE_1__/* .Bot */ .r(options, new _options__WEBPACK_IMPORTED_MODULE_2__/* .OpenAIOptions */ .i0(options.openaiLightModel, options.lightTokenLimits));
+        lightBot = new _bot__WEBPACK_IMPORTED_MODULE_1__/* .Bot */ .r(options, new _options__WEBPACK_IMPORTED_MODULE_2__/* .OpenAIOptions */ .i0(options.openaiLightModel, options.lightTokenLimits, options.openaiProviderOrder));
     }
     catch (e) {
         (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.warning)(`Skipped: failed to create summary bot, please check your openai_api_key: ${e}, backtrace: ${e.stack}`);
@@ -4657,7 +4655,7 @@ async function run() {
     }
     let heavyBot = null;
     try {
-        heavyBot = new _bot__WEBPACK_IMPORTED_MODULE_1__/* .Bot */ .r(options, new _options__WEBPACK_IMPORTED_MODULE_2__/* .OpenAIOptions */ .i0(options.openaiHeavyModel, options.heavyTokenLimits));
+        heavyBot = new _bot__WEBPACK_IMPORTED_MODULE_1__/* .Bot */ .r(options, new _options__WEBPACK_IMPORTED_MODULE_2__/* .OpenAIOptions */ .i0(options.openaiHeavyModel, options.heavyTokenLimits, options.openaiProviderOrder));
     }
     catch (e) {
         (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.warning)(`Skipped: failed to create review bot, please check your openai_api_key: ${e}, backtrace: ${e.stack}`);
@@ -6529,29 +6527,31 @@ class TokenLimits {
     requestTokens;
     responseTokens;
     knowledgeCutOff;
-    constructor(model = 'gpt-3.5-turbo') {
+    // constructor(model = 'gpt-3.5-turbo') {
+    // this.knowledgeCutOff = '2021-09-01'
+    // if (model === 'gpt-4-32k') {
+    // this.maxTokens = 32600
+    // this.responseTokens = 4000
+    // } else if (model === 'gpt-3.5-turbo-16k') {
+    // this.maxTokens = 16300
+    // this.responseTokens = 3000
+    // } else if (model === 'gpt-4') {
+    // this.maxTokens = 8000
+    // this.responseTokens = 2000
+    // } else if (model == 'deepseek/deepseek-coder') {
+    // this.maxTokens = 32000;
+    // this.responseTokens = 10000;
+    // } else {
+    // this.maxTokens = 4000
+    // this.responseTokens = 1000
+    // }
+    // // provide some margin for the request tokens
+    // this.requestTokens = this.maxTokens - this.responseTokens - 100
+    // }
+    constructor(maxTokens, responseTokens) {
+        this.maxTokens = maxTokens;
+        this.responseTokens = responseTokens;
         this.knowledgeCutOff = '2021-09-01';
-        if (model === 'gpt-4-32k') {
-            this.maxTokens = 32600;
-            this.responseTokens = 4000;
-        }
-        else if (model === 'gpt-3.5-turbo-16k') {
-            this.maxTokens = 16300;
-            this.responseTokens = 3000;
-        }
-        else if (model === 'gpt-4') {
-            this.maxTokens = 8000;
-            this.responseTokens = 2000;
-        }
-        else if (model == 'deepseek/deepseek-coder') {
-            this.maxTokens = 32000;
-            this.responseTokens = 10000;
-        }
-        else {
-            this.maxTokens = 4000;
-            this.responseTokens = 1000;
-        }
-        // provide some margin for the request tokens
         this.requestTokens = this.maxTokens - this.responseTokens - 100;
     }
     string() {
@@ -6574,6 +6574,9 @@ class Options {
     systemMessage;
     openaiLightModel;
     openaiHeavyModel;
+    openaiProviderOrder;
+    // openaiContext: number
+    // openaiMaxOutput: number
     openaiModelTemperature;
     openaiRetries;
     openaiTimeoutMS;
@@ -6583,7 +6586,7 @@ class Options {
     heavyTokenLimits;
     apiBaseUrl;
     language;
-    constructor(debug, disableReview, disableReleaseNotes, maxFiles = '0', reviewSimpleChanges = false, reviewCommentLGTM = false, pathFilters = null, systemMessage = '', openaiLightModel = 'gpt-3.5-turbo', openaiHeavyModel = 'gpt-3.5-turbo', openaiModelTemperature = '0.0', openaiRetries = '3', openaiTimeoutMS = '120000', openaiConcurrencyLimit = '6', githubConcurrencyLimit = '6', apiBaseUrl = 'https://api.openai.com/v1', language = 'en-US') {
+    constructor(debug, disableReview, disableReleaseNotes, maxFiles = '0', reviewSimpleChanges = false, reviewCommentLGTM = false, pathFilters = null, systemMessage = '', openaiLightModel = 'gpt-3.5-turbo', openaiHeavyModel = 'gpt-3.5-turbo', openaiProviderOrder, openaiContext, openaiMaxOutput, openaiModelTemperature = '0.0', openaiRetries = '3', openaiTimeoutMS = '120000', openaiConcurrencyLimit = '6', githubConcurrencyLimit = '6', apiBaseUrl = 'https://api.openai.com/v1', language = 'en-US') {
         this.debug = debug;
         this.disableReview = disableReview;
         this.disableReleaseNotes = disableReleaseNotes;
@@ -6594,13 +6597,16 @@ class Options {
         this.systemMessage = systemMessage;
         this.openaiLightModel = openaiLightModel;
         this.openaiHeavyModel = openaiHeavyModel;
+        this.openaiProviderOrder = openaiProviderOrder;
+        // this.openaiContext = openaiContext
+        // this.openaiMaxOutput = openaiMaxOutput
         this.openaiModelTemperature = parseFloat(openaiModelTemperature);
         this.openaiRetries = parseInt(openaiRetries);
         this.openaiTimeoutMS = parseInt(openaiTimeoutMS);
         this.openaiConcurrencyLimit = parseInt(openaiConcurrencyLimit);
         this.githubConcurrencyLimit = parseInt(githubConcurrencyLimit);
-        this.lightTokenLimits = new TokenLimits(openaiLightModel);
-        this.heavyTokenLimits = new TokenLimits(openaiHeavyModel);
+        this.lightTokenLimits = new TokenLimits(openaiContext, openaiMaxOutput);
+        this.heavyTokenLimits = new TokenLimits(openaiContext, openaiMaxOutput);
         this.apiBaseUrl = apiBaseUrl;
         this.language = language;
     }
@@ -6616,6 +6622,7 @@ class Options {
         (0,core.info)(`system_message: ${this.systemMessage}`);
         (0,core.info)(`openai_light_model: ${this.openaiLightModel}`);
         (0,core.info)(`openai_heavy_model: ${this.openaiHeavyModel}`);
+        (0,core.info)(`openai_provider_order: ${this.openaiProviderOrder}`);
         (0,core.info)(`openai_model_temperature: ${this.openaiModelTemperature}`);
         (0,core.info)(`openai_retries: ${this.openaiRetries}`);
         (0,core.info)(`openai_timeout_ms: ${this.openaiTimeoutMS}`);
@@ -6676,14 +6683,15 @@ class PathFilter {
 class OpenAIOptions {
     model;
     tokenLimits;
-    constructor(model = 'gpt-3.5-turbo', tokenLimits = null) {
+    providerOrder;
+    constructor(model = 'gpt-3.5-turbo', tokenLimits, providerOrder = []) {
         this.model = model;
-        if (tokenLimits != null) {
-            this.tokenLimits = tokenLimits;
-        }
-        else {
-            this.tokenLimits = new TokenLimits(model);
-        }
+        //    if (tokenLimits != null) {
+        this.tokenLimits = tokenLimits;
+        //    } else {
+        //      // this.tokenLimits = new TokenLimits(model)
+        //    }
+        this.providerOrder = providerOrder;
     }
 }
 

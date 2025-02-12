@@ -23,6 +23,9 @@ async function run(): Promise<void> {
     getInput('system_message'),
     getInput('openai_light_model'),
     getInput('openai_heavy_model'),
+    getMultilineInput('openai_provider_order'),
+    parseInt(getInput('open_ai_context')),
+    parseInt(getInput('open_ai_max_output')),
     getInput('openai_model_temperature'),
     getInput('openai_retries'),
     getInput('openai_timeout_ms'),
@@ -46,7 +49,7 @@ async function run(): Promise<void> {
   try {
     lightBot = new Bot(
       options,
-      new OpenAIOptions(options.openaiLightModel, options.lightTokenLimits)
+      new OpenAIOptions(options.openaiLightModel, options.lightTokenLimits, options.openaiProviderOrder)
     )
   } catch (e: any) {
     warning(
@@ -59,7 +62,7 @@ async function run(): Promise<void> {
   try {
     heavyBot = new Bot(
       options,
-      new OpenAIOptions(options.openaiHeavyModel, options.heavyTokenLimits)
+      new OpenAIOptions(options.openaiHeavyModel, options.heavyTokenLimits, options.openaiProviderOrder)
     )
   } catch (e: any) {
     warning(

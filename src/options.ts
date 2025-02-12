@@ -13,6 +13,9 @@ export class Options {
   systemMessage: string
   openaiLightModel: string
   openaiHeavyModel: string
+  openaiProviderOrder: string[]
+  // openaiContext: number
+  // openaiMaxOutput: number
   openaiModelTemperature: number
   openaiRetries: number
   openaiTimeoutMS: number
@@ -34,6 +37,9 @@ export class Options {
     systemMessage = '',
     openaiLightModel = 'gpt-3.5-turbo',
     openaiHeavyModel = 'gpt-3.5-turbo',
+    openaiProviderOrder: string[],
+    openaiContext: number ,
+    openaiMaxOutput: number,
     openaiModelTemperature = '0.0',
     openaiRetries = '3',
     openaiTimeoutMS = '120000',
@@ -52,13 +58,16 @@ export class Options {
     this.systemMessage = systemMessage
     this.openaiLightModel = openaiLightModel
     this.openaiHeavyModel = openaiHeavyModel
+    this.openaiProviderOrder = openaiProviderOrder
+    // this.openaiContext = openaiContext
+    // this.openaiMaxOutput = openaiMaxOutput
     this.openaiModelTemperature = parseFloat(openaiModelTemperature)
     this.openaiRetries = parseInt(openaiRetries)
     this.openaiTimeoutMS = parseInt(openaiTimeoutMS)
     this.openaiConcurrencyLimit = parseInt(openaiConcurrencyLimit)
     this.githubConcurrencyLimit = parseInt(githubConcurrencyLimit)
-    this.lightTokenLimits = new TokenLimits(openaiLightModel)
-    this.heavyTokenLimits = new TokenLimits(openaiHeavyModel)
+    this.lightTokenLimits = new TokenLimits(openaiContext, openaiMaxOutput)
+    this.heavyTokenLimits = new TokenLimits(openaiContext, openaiMaxOutput)
     this.apiBaseUrl = apiBaseUrl
     this.language = language
   }
@@ -75,6 +84,7 @@ export class Options {
     info(`system_message: ${this.systemMessage}`)
     info(`openai_light_model: ${this.openaiLightModel}`)
     info(`openai_heavy_model: ${this.openaiHeavyModel}`)
+    info(`openai_provider_order: ${this.openaiProviderOrder}`)
     info(`openai_model_temperature: ${this.openaiModelTemperature}`)
     info(`openai_retries: ${this.openaiRetries}`)
     info(`openai_timeout_ms: ${this.openaiTimeoutMS}`)
@@ -141,13 +151,15 @@ export class PathFilter {
 export class OpenAIOptions {
   model: string
   tokenLimits: TokenLimits
+  providerOrder: string[]
 
-  constructor(model = 'gpt-3.5-turbo', tokenLimits: TokenLimits | null = null) {
+  constructor(model = 'gpt-3.5-turbo', tokenLimits: TokenLimits, providerOrder: string[] = []) {
     this.model = model
-    if (tokenLimits != null) {
+//    if (tokenLimits != null) {
       this.tokenLimits = tokenLimits
-    } else {
-      this.tokenLimits = new TokenLimits(model)
-    }
+//    } else {
+//      // this.tokenLimits = new TokenLimits(model)
+//    }
+    this.providerOrder = providerOrder
   }
 }
